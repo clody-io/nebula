@@ -13,8 +13,8 @@ resources:
     namespaced: true
   controller: true
   domain: clody.io
-  group: virual-env
-  kind: VirualEnv
+  group: virtual-env
+  kind: VirtualEnv
   path: clody.io/nebula/api/v1
   version: v1
 version: "3"

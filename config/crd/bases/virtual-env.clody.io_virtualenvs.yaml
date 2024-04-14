@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: virualenvs.virual-env.clody.io
+  name: virtualenvs.virtual-env.clody.io
 spec:
-  group: virual-env.clody.io
+  group: virtual-env.clody.io
   names:
-    kind: VirualEnv
-    listKind: VirualEnvList
-    plural: virualenvs
-    singular: virualenv
+    kind: VirtualEnv
+    listKind: VirtualEnvList
+    plural: virtualenvs
+    singular: virtualenv
   scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: VirualEnv is the Schema for the virualenvs API
+        description: VirtualEnv is the Schema for the virtualenvs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -32,15 +32,15 @@ spec:
           metadata:
             type: object
           spec:
-            description: VirualEnvSpec defines the desired state of VirualEnv
+            description: VirtualEnvSpec defines the desired state of VirtualEnv
             properties:
               foo:
-                description: Foo is an example field of VirualEnv. Edit virualenv_types.go
+                description: Foo is an example field of VirtualEnv. Edit virtualenv_types.go
                   to remove/update
                 type: string
             type: object
           status:
-            description: VirualEnvStatus defines the observed state of VirualEnv
+            description: VirtualEnvStatus defines the observed state of VirtualEnv
             type: object
         type: object
     served: true

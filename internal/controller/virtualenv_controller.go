@@ -24,29 +24,29 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	virualenvv1 "clody.io/nebula/api/v1"
+	virtualenvv1 "clody.io/nebula/api/v1"
 )
 
-// VirualEnvReconciler reconciles a VirualEnv object
-type VirualEnvReconciler struct {
+// VirtualEnvReconciler reconciles a VirtualEnv object
+type VirtualEnvReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=virual-env.clody.io,resources=virualenvs,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=virual-env.clody.io,resources=virualenvs/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=virual-env.clody.io,resources=virualenvs/finalizers,verbs=update
+//+kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvs/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvs/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the VirualEnv object against the actual cluster state, and then
+// the VirtualEnv object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.16.3/pkg/reconcile
-func (r *VirualEnvReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *VirtualEnvReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
 	// TODO(user): your logic here
@@ -55,8 +55,8 @@ func (r *VirualEnvReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *VirualEnvReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *VirtualEnvReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&virualenvv1.VirualEnv{}).
+		For(&virtualenvv1.VirtualEnv{}).
 		Complete(r)
 }

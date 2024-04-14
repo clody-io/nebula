@@ -32,7 +32,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	virualenvv1 "clody.io/nebula/api/v1"
+	virtualenvv1 "clody.io/nebula/api/v1"
 	"clody.io/nebula/internal/controller"
 	//+kubebuilder:scaffold:imports
 )
@@ -45,7 +45,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(virualenvv1.AddToScheme(scheme))
+	utilruntime.Must(virtualenvv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -89,11 +89,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controller.VirualEnvReconciler{
+	if err = (&controller.VirtualEnvReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "VirualEnv")
+		setupLog.Error(err, "unable to create controller", "controller", "VirtualEnv")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

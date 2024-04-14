@@ -23,17 +23,17 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// VirualEnvSpec defines the desired state of VirualEnv
-type VirualEnvSpec struct {
+// VirtualEnvSpec defines the desired state of VirtualEnv
+type VirtualEnvSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of VirualEnv. Edit virualenv_types.go to remove/update
+	// Foo is an example field of VirtualEnv. Edit virtualenv_types.go to remove/update
 	Foo string `json:"foo,omitempty"`
 }
 
-// VirualEnvStatus defines the observed state of VirualEnv
-type VirualEnvStatus struct {
+// VirtualEnvStatus defines the observed state of VirtualEnv
+type VirtualEnvStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
@@ -41,24 +41,24 @@ type VirualEnvStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// VirualEnv is the Schema for the virualenvs API
-type VirualEnv struct {
+// VirtualEnv is the Schema for the virtualenvs API
+type VirtualEnv struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   VirualEnvSpec   `json:"spec,omitempty"`
-	Status VirualEnvStatus `json:"status,omitempty"`
+	Spec   VirtualEnvSpec   `json:"spec,omitempty"`
+	Status VirtualEnvStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// VirualEnvList contains a list of VirualEnv
-type VirualEnvList struct {
+// VirtualEnvList contains a list of VirtualEnv
+type VirtualEnvList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []VirualEnv `json:"items"`
+	Items           []VirtualEnv `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&VirualEnv{}, &VirualEnvList{})
+	SchemeBuilder.Register(&VirtualEnv{}, &VirtualEnvList{})
 }

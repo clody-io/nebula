@@ -5,9 +5,9 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - virual-env.clody.io
+  - virtual-env.clody.io
   resources:
-  - virualenvs
+  - virtualenvs
   verbs:
   - create
   - delete
@@ -17,15 +17,15 @@ rules:
   - update
   - watch
 - apiGroups:
-  - virual-env.clody.io
+  - virtual-env.clody.io
   resources:
-  - virualenvs/finalizers
+  - virtualenvs/finalizers
   verbs:
   - update
 - apiGroups:
-  - virual-env.clody.io
+  - virtual-env.clody.io
   resources:
-  - virualenvs/status
+  - virtualenvs/status
   verbs:
   - get
   - patch
