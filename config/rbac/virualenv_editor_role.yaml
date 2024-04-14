@@ -1,0 +1,31 @@
+# permissions for end users to edit virualenvs.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: virualenv-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: nebula
+    app.kubernetes.io/part-of: nebula
+    app.kubernetes.io/managed-by: kustomize
+  name: virualenv-editor-role
+rules:
+- apiGroups:
+  - virual-env.clody.io
+  resources:
+  - virualenvs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - virual-env.clody.io
+  resources:
+  - virualenvs/status
+  verbs:
+  - get

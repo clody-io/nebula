@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- virual-env_v1_virualenv.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples
