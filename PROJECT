@@ -17,4 +17,31 @@ resources:
   kind: VirtualEnv
   path: clody.io/nebula/api/v1
   version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: clody.io
+  group: virtual-env
+  kind: VirtualRoom
+  path: clody.io/nebula/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: clody.io
+  group: virtual-env
+  kind: OpenstackRoom
+  path: clody.io/nebula/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: clody.io
+  group: virtual-env
+  kind: LocalRoom
+  path: clody.io/nebula/api/v1
+  version: v1
 version: "3"

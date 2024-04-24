@@ -96,6 +96,27 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "VirtualEnv")
 		os.Exit(1)
 	}
+	if err = (&controller.VirtualRoomReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "VirtualRoom")
+		os.Exit(1)
+	}
+	if err = (&controller.OpenstackRoomReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "OpenstackRoom")
+		os.Exit(1)
+	}
+	if err = (&controller.LocalRoomReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "LocalRoom")
+		os.Exit(1)
+	}
 	//+kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {

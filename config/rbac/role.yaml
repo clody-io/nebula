@@ -7,6 +7,58 @@ rules:
 - apiGroups:
   - virtual-env.clody.io
   resources:
+  - localrooms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
+  - localrooms/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
+  - localrooms/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
+  - openstackrooms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
+  - openstackrooms/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
+  - openstackrooms/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
   - virtualenvs
   verbs:
   - create
