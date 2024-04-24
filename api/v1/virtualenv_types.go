@@ -29,19 +29,39 @@ type VirtualEnvSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of VirtualEnv. Edit virtualenv_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	//Foo string `json:"foo,omitempty"`
+
+	//+kubebuilder:validation:Required
+	Provider Provider `json:"provider,omitempty"`
+
+	//+kubebuilder:validation:Required
+	UserID string `json:"userID,omitempty"`
+
+	//+kubebuilder:validation:Required
+	CourseID string `json:"courseID,omitempty"`
+
+	//+kubebuilder:validation:Optional
+	OpenstackRoom OpenstackRoom `json:"openstackRoom,omitempty"`
 }
+
+// Provider defines the Cloud platform provider
+// +kubebuilder:validation:Enum=GCP;AWS;Openstack;local;
+type Provider string
 
 // VirtualEnvStatus defines the observed state of VirtualEnv
 type VirtualEnvStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-
 // VirtualEnv is the Schema for the virtualenvs API
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="Provider",type=string,JSONPath=`.spec.alias`
+// +kubebuilder:printcolumn:name="UserID",type=string,JSONPath=`.spec.userID`
+// +kubebuilder:printcolumn:name="CourseID",type=string,JSONPath=`.spec.courseID`
+// +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 type VirtualEnv struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

@@ -1,0 +1,12 @@
+apiVersion: virtual-env.clody.io/v1
+kind: VirtualRoom
+metadata:
+  labels:
+    app.kubernetes.io/name: virtualroom
+    app.kubernetes.io/instance: virtualroom-sample
+    app.kubernetes.io/part-of: nebula
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: nebula
+  name: virtualroom-sample
+spec:
+  # TODO(user): Add fields here

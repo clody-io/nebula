@@ -1,4 +1,7 @@
 ## Append samples of your project ##
 resources:
 - virtual-env_v1_virtualenv.yaml
+- virtual-env_v1_virtualroom.yaml
+- virtual-env_v1_openstackroom.yaml
+- virtual-env_v1_localroom.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples
