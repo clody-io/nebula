@@ -5,6 +5,33 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - virtual-env.clody.io
   resources:
   - localrooms
@@ -52,32 +79,6 @@ rules:
   - virtual-env.clody.io
   resources:
   - openstackrooms/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - virtualenvs
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - virtualenvs/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - virtualenvs/status
   verbs:
   - get
   - patch
