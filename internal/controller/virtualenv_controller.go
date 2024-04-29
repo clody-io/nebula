@@ -49,7 +49,7 @@ const (
 	// typeAvailableVirtualEnv represents the status of the Deployment reconciliation
 	typeAvailableVirtualEnv = "Available"
 	// typeDegradedVirtualEnv represents the status used when the custom resource is deleted and the finalizer operations are yet to occur.
-	typeDegradedVirtualEnv = "Degraded"
+	//typeDegradedVirtualEnv = "Degraded"
 )
 
 // VirtualEnvReconciler reconciles a VirtualEnv object
@@ -191,6 +191,7 @@ func (r *VirtualEnvReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 			return ctrl.Result{}, err
 		}
 	} else if provider == local {
+		return ctrl.Result{}, nil
 	}
 
 	return ctrl.Result{}, nil
