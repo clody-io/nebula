@@ -23,5 +23,6 @@ go.work
 # jetbrain
 .idea
 
+bin/**
 
 kubeconfig

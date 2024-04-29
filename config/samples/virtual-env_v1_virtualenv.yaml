@@ -9,4 +9,9 @@ metadata:
     app.kubernetes.io/created-by: nebula
   name: virtualenv-sample
 spec:
-  # TODO(user): Add fields here
+  provider: Openstack
+  openstackRoom:
+    spec:
+      flavor: fake-flavor
+      image: fake-image
+      region: fake-region

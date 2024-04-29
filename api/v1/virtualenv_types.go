@@ -37,11 +37,11 @@ type VirtualEnvSpec struct {
 	//+kubebuilder:validation:Required
 	UserID string `json:"userID,omitempty"`
 
-	//+kubebuilder:validation:Required
-	CourseID string `json:"courseID,omitempty"`
-
 	//+kubebuilder:validation:Optional
 	OpenstackRoom OpenstackRoom `json:"openstackRoom,omitempty"`
+
+	//+kubebuilder:validation:Optional
+	LocalRoom LocalRoom `json:"localRoom,omitempty"`
 }
 
 // Provider defines the Cloud platform provider
@@ -60,7 +60,6 @@ type VirtualEnvStatus struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="Provider",type=string,JSONPath=`.spec.alias`
 // +kubebuilder:printcolumn:name="UserID",type=string,JSONPath=`.spec.userID`
-// +kubebuilder:printcolumn:name="CourseID",type=string,JSONPath=`.spec.courseID`
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp"
 type VirtualEnv struct {
 	metav1.TypeMeta   `json:",inline"`
