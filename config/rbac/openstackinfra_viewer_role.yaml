@@ -1,0 +1,23 @@
+# permissions for end users to view openstackinfras.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: nebula
+    app.kubernetes.io/managed-by: kustomize
+  name: openstackinfra-viewer-role
+rules:
+- apiGroups:
+  - virtualenv.clody.io.clody.io
+  resources:
+  - openstackinfras
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - virtualenv.clody.io.clody.io
+  resources:
+  - openstackinfras/status
+  verbs:
+  - get

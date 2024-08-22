@@ -6,42 +6,33 @@ domain: clody.io
 layout:
 - go.kubebuilder.io/v4
 projectName: nebula
-repo: clody.io/nebula
+repo: github.com/clody-io/nebula
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
   domain: clody.io
-  group: virtual-env
+  group: virtualenv.clody.io
   kind: VirtualEnv
-  path: clody.io/nebula/api/v1
-  version: v1
+  path: github.com/clody-io/nebula/api/v1alpha1
+  version: v1alpha1
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
   domain: clody.io
-  group: virtual-env
-  kind: VirtualRoom
-  path: clody.io/nebula/api/v1
-  version: v1
+  group: virtualenv.clody.io
+  kind: VirtualEnvInfra
+  path: github.com/clody-io/nebula/api/v1alpha1
+  version: v1alpha1
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
   domain: clody.io
-  group: virtual-env
-  kind: OpenstackRoom
-  path: clody.io/nebula/api/v1
-  version: v1
-- api:
-    crdVersion: v1
-    namespaced: true
-  controller: true
-  domain: clody.io
-  group: virtual-env
-  kind: LocalRoom
-  path: clody.io/nebula/api/v1
-  version: v1
+  group: virtualenv.clody.io
+  kind: OpenstackInfra
+  path: github.com/clody-io/nebula/api/v1alpha1
+  version: v1alpha1
 version: "3"

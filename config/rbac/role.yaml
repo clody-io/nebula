@@ -1,84 +1,11 @@
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: nebula
+    app.kubernetes.io/managed-by: kustomize
   name: manager-role
 rules:
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - localrooms
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - localrooms/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - localrooms/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - openstackrooms
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - openstackrooms/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - openstackrooms/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - virtualenvs
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - virtualenvs/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - virtual-env.clody.io
-  resources:
-  - virtualenvs/status
-  verbs:
-  - get
-  - patch
-  - update
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]

@@ -3,16 +3,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-    app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: virtualenv-viewer-role
-    app.kubernetes.io/component: rbac
-    app.kubernetes.io/created-by: nebula
-    app.kubernetes.io/part-of: nebula
+    app.kubernetes.io/name: nebula
     app.kubernetes.io/managed-by: kustomize
   name: virtualenv-viewer-role
 rules:
 - apiGroups:
-  - virtual-env.clody.io
+  - virtualenv.clody.io.clody.io
   resources:
   - virtualenvs
   verbs:
@@ -20,7 +16,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - virtual-env.clody.io
+  - virtualenv.clody.io.clody.io
   resources:
   - virtualenvs/status
   verbs:
