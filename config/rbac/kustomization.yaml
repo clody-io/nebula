@@ -22,8 +22,8 @@ resources:
 # default, aiding admins in cluster management. Those roles are
 # not used by the Project itself. You can comment the following lines
 # if you do not want those helpers be installed with your Project.
-- openstackinfra_editor_role.yaml
-- openstackinfra_viewer_role.yaml
+- openstackvm_editor_role.yaml
+- openstackvm_viewer_role.yaml
 - virtualenvinfra_editor_role.yaml
 - virtualenvinfra_viewer_role.yaml
 - virtualenv_editor_role.yaml

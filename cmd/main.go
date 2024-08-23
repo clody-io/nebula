@@ -35,7 +35,7 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	virtualenvclodyiov1alpha1 "github.com/clody-io/nebula/api/v1alpha1"
+	virtualenvv1 "github.com/clody-io/nebula/api/v1"
 	"github.com/clody-io/nebula/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
@@ -48,7 +48,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(virtualenvclodyiov1alpha1.AddToScheme(scheme))
+	utilruntime.Must(virtualenvv1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -98,7 +98,7 @@ func main() {
 
 	// Metrics endpoint is enabled in 'config/default/kustomization.yaml'. The Metrics options configure the server.
 	// More info:
-	// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.18.4/pkg/metrics/server
+	// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.19.0/pkg/metrics/server
 	// - https://book.kubebuilder.io/reference/metrics.html
 	metricsServerOptions := metricsserver.Options{
 		BindAddress:   metricsAddr,
@@ -116,7 +116,7 @@ func main() {
 		// FilterProvider is used to protect the metrics endpoint with authn/authz.
 		// These configurations ensure that only authorized users and service accounts
 		// can access the metrics endpoint. The RBAC are configured in 'config/rbac/kustomization.yaml'. More info:
-		// https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.18.4/pkg/metrics/filters#WithAuthenticationAndAuthorization
+		// https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.19.0/pkg/metrics/filters#WithAuthenticationAndAuthorization
 		metricsServerOptions.FilterProvider = filters.WithAuthenticationAndAuthorization
 	}
 
@@ -144,6 +144,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err = (&controller.OpenstackProviderReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "OpenstackProvider")
+		os.Exit(1)
+	}
 	if err = (&controller.VirtualEnvReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
@@ -156,13 +163,6 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "VirtualEnvInfra")
-		os.Exit(1)
-	}
-	if err = (&controller.OpenstackInfraReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "OpenstackInfra")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

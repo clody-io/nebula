@@ -1,0 +1,9 @@
+apiVersion: virtual-env.clody.io/v1
+kind: VirtualEnv
+metadata:
+  labels:
+    app.kubernetes.io/name: nebula
+    app.kubernetes.io/managed-by: kustomize
+  name: virtualenv-sample
+spec:
+  # TODO(user): Add fields here

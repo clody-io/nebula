@@ -8,7 +8,7 @@ metadata:
   name: virtualenv-viewer-role
 rules:
 - apiGroups:
-  - virtualenv.clody.io.clody.io
+  - virtual-env.clody.io
   resources:
   - virtualenvs
   verbs:
@@ -16,7 +16,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - virtualenv.clody.io.clody.io
+  - virtual-env.clody.io
   resources:
   - virtualenvs/status
   verbs:

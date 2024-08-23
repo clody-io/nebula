@@ -8,31 +8,35 @@ layout:
 projectName: nebula
 repo: github.com/clody-io/nebula
 resources:
+- controller: true
+  domain: clody.io
+  group: virtual-env
+  kind: OpenstackProvider
+  version: v1
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
   domain: clody.io
-  group: virtualenv.clody.io
+  group: virtual-env
   kind: VirtualEnv
-  path: github.com/clody-io/nebula/api/v1alpha1
-  version: v1alpha1
+  path: github.com/clody-io/nebula/api/v1
+  version: v1
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
   domain: clody.io
-  group: virtualenv.clody.io
+  group: virtual-env
   kind: VirtualEnvInfra
-  path: github.com/clody-io/nebula/api/v1alpha1
-  version: v1alpha1
+  path: github.com/clody-io/nebula/api/v1
+  version: v1
 - api:
     crdVersion: v1
     namespaced: true
-  controller: true
   domain: clody.io
-  group: virtualenv.clody.io
-  kind: OpenstackInfra
-  path: github.com/clody-io/nebula/api/v1alpha1
-  version: v1alpha1
+  group: virtual-env
+  kind: OpenstackVM
+  path: github.com/clody-io/nebula/api/v1
+  version: v1
 version: "3"

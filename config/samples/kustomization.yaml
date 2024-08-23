@@ -1,6 +1,6 @@
 ## Append samples of your project ##
 resources:
-- virtualenv.clody.io_v1alpha1_virtualenv.yaml
-- virtualenv.clody.io_v1alpha1_virtualenvinfra.yaml
-- virtualenv.clody.io_v1alpha1_openstackinfra.yaml
+- virtual-env_v1_virtualenv.yaml
+- virtual-env_v1_virtualenvinfra.yaml
+- virtual-env_v1_openstackvm.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples

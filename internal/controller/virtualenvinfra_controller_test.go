@@ -27,7 +27,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	virtualenvclodyiov1alpha1 "github.com/clody-io/nebula/api/v1alpha1"
+	virtualenvv1 "github.com/clody-io/nebula/api/v1"
 )
 
 var _ = Describe("VirtualEnvInfra Controller", func() {
@@ -40,13 +40,13 @@ var _ = Describe("VirtualEnvInfra Controller", func() {
 			Name:      resourceName,
 			Namespace: "default", // TODO(user):Modify as needed
 		}
-		virtualenvinfra := &virtualenvclodyiov1alpha1.VirtualEnvInfra{}
+		virtualenvinfra := &virtualenvv1.VirtualEnvInfra{}
 
 		BeforeEach(func() {
 			By("creating the custom resource for the Kind VirtualEnvInfra")
 			err := k8sClient.Get(ctx, typeNamespacedName, virtualenvinfra)
 			if err != nil && errors.IsNotFound(err) {
-				resource := &virtualenvclodyiov1alpha1.VirtualEnvInfra{
+				resource := &virtualenvv1.VirtualEnvInfra{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      resourceName,
 						Namespace: "default",
@@ -59,7 +59,7 @@ var _ = Describe("VirtualEnvInfra Controller", func() {
 
 		AfterEach(func() {
 			// TODO(user): Cleanup logic after each test, like removing the resource instance.
-			resource := &virtualenvclodyiov1alpha1.VirtualEnvInfra{}
+			resource := &virtualenvv1.VirtualEnvInfra{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 

@@ -17,6 +17,7 @@ limitations under the License.
 package controller
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 	"runtime"
@@ -32,7 +33,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	virtualenvclodyiov1alpha1 "github.com/clody-io/nebula/api/v1alpha1"
+	virtualenvv1 "github.com/clody-io/nebula/api/v1"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -42,6 +43,8 @@ import (
 var cfg *rest.Config
 var k8sClient client.Client
 var testEnv *envtest.Environment
+var ctx context.Context
+var cancel context.CancelFunc
 
 func TestControllers(t *testing.T) {
 	RegisterFailHandler(Fail)
@@ -52,10 +55,12 @@ func TestControllers(t *testing.T) {
 var _ = BeforeSuite(func() {
 	logf.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
 
+	ctx, cancel = context.WithCancel(context.TODO())
+
 	By("bootstrapping test environment")
 	testEnv = &envtest.Environment{
 		CRDDirectoryPaths:     []string{filepath.Join("..", "..", "config", "crd", "bases")},
-		ErrorIfCRDPathMissing: true,
+		ErrorIfCRDPathMissing: false,
 
 		// The BinaryAssetsDirectory is only required if you want to run the tests directly
 		// without call the makefile target test. If not informed it will look for the
@@ -63,7 +68,7 @@ var _ = BeforeSuite(func() {
 		// Note that you must have the required binaries setup under the bin directory to perform
 		// the tests directly. When we run make test it will be setup and used automatically.
 		BinaryAssetsDirectory: filepath.Join("..", "..", "bin", "k8s",
-			fmt.Sprintf("1.30.0-%s-%s", runtime.GOOS, runtime.GOARCH)),
+			fmt.Sprintf("1.31.0-%s-%s", runtime.GOOS, runtime.GOARCH)),
 	}
 
 	var err error
@@ -72,7 +77,7 @@ var _ = BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	Expect(cfg).NotTo(BeNil())
 
-	err = virtualenvclodyiov1alpha1.AddToScheme(scheme.Scheme)
+	err = virtualenvv1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	// +kubebuilder:scaffold:scheme
@@ -85,6 +90,7 @@ var _ = BeforeSuite(func() {
 
 var _ = AfterSuite(func() {
 	By("tearing down the test environment")
+	cancel()
 	err := testEnv.Stop()
 	Expect(err).NotTo(HaveOccurred())
 })

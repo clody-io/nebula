@@ -8,7 +8,7 @@ metadata:
   name: virtualenv-editor-role
 rules:
 - apiGroups:
-  - virtualenv.clody.io.clody.io
+  - virtual-env.clody.io
   resources:
   - virtualenvs
   verbs:
@@ -20,7 +20,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - virtualenv.clody.io.clody.io
+  - virtual-env.clody.io
   resources:
   - virtualenvs/status
   verbs:

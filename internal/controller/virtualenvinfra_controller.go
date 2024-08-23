@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	virtualenvclodyiov1alpha1 "github.com/clody-io/nebula/api/v1alpha1"
+	virtualenvv1 "github.com/clody-io/nebula/api/v1"
 )
 
 // VirtualEnvInfraReconciler reconciles a VirtualEnvInfra object
@@ -33,9 +33,9 @@ type VirtualEnvInfraReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=virtualenv.clody.io.clody.io,resources=virtualenvinfras,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=virtualenv.clody.io.clody.io,resources=virtualenvinfras/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=virtualenv.clody.io.clody.io,resources=virtualenvinfras/finalizers,verbs=update
+// +kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvinfras,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvinfras/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvinfras/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -45,11 +45,11 @@ type VirtualEnvInfraReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.18.4/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.19.0/pkg/reconcile
 func (r *VirtualEnvInfraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	logger.Info("Hello Virtual ENV Infra in reconciled")
 
 	return ctrl.Result{}, nil
 }
@@ -57,6 +57,6 @@ func (r *VirtualEnvInfraReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 // SetupWithManager sets up the controller with the Manager.
 func (r *VirtualEnvInfraReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&virtualenvclodyiov1alpha1.VirtualEnvInfra{}).
+		For(&virtualenvv1.VirtualEnvInfra{}).
 		Complete(r)
 }

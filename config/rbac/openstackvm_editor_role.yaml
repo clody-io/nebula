@@ -1,0 +1,27 @@
+# permissions for end users to edit openstackvms.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: nebula
+    app.kubernetes.io/managed-by: kustomize
+  name: openstackvm-editor-role
+rules:
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
+  - openstackvms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - virtual-env.clody.io
+  resources:
+  - openstackvms/status
+  verbs:
+  - get
