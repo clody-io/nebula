@@ -32,10 +32,21 @@ type VirtualEnvInfraSpec struct {
 	Provider string `json:"provider"`
 }
 
+type VirtualMachineStatus struct {
+	VirtualMachine     string       `json:"virtualMachine,omitempty"`
+	Provider           string       `json:"provider,omitempty"`
+	ConnectionURL      string       `json:"connectionURL,omitempty"`
+	Step               string       `json:"step,omitempty"`
+	LastTransitionTime *metav1.Time `json:"lastTransitionTime,omitempty"`
+	Status             string       `json:"status,omitempty"`
+}
+
 // VirtualEnvInfraStatus defines the observed state of VirtualEnvInfra
 type VirtualEnvInfraStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Conditions           []metav1.Condition     `json:"conditions,omitempty"`
+	VirtualMachineStatus []VirtualMachineStatus `json:"virtualMachineStatus,omitempty"`
 }
 
 // +kubebuilder:object:root=true

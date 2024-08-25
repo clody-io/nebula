@@ -36,6 +36,11 @@ type OpenstackVMSpec struct {
 type OpenstackVMStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	CreationTimestamp    metav1.Time          `json:"creationTimestamp,omitempty"`
+	Conditions           []metav1.Condition   `json:"conditions,omitempty"`
+	Status               string               `json:"status,omitempty"`
+	Errors               []OpenstackVMError   `json:"errorMessage,omitempty"`
+	VirtualMachineStatus VirtualMachineStatus `json:"virtualMachineStatus,omitempty"`
 }
 
 // +kubebuilder:object:root=true

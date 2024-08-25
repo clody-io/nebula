@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: registry.local.j2eff.io/nebula/controller
-  newTag: v0.0.1.test1
+  newTag: v0.0.1.test43

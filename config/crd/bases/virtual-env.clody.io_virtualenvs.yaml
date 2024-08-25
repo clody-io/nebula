@@ -39,7 +39,7 @@ spec:
           spec:
             description: VirtualEnvSpec defines the desired state of VirtualEnv
             properties:
-              virtualEnvInfra:
+              virtualEnvInfraRef:
                 description: Foo is an example field of VirtualEnv. Edit virtualenv_types.go
                   to remove/update
                 properties:
@@ -84,7 +84,7 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
             required:
-            - virtualEnvInfra
+            - virtualEnvInfraRef
             type: object
           status:
             description: VirtualEnvStatus defines the observed state of VirtualEnv

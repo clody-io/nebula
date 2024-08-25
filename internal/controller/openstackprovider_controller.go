@@ -19,6 +19,9 @@ package controller
 import (
 	"context"
 	virtualenvv1 "github.com/clody-io/nebula/api/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -55,7 +58,58 @@ func (r *OpenstackProviderReconciler) Reconcile(ctx context.Context, req ctrl.Re
 
 	logger.Info("Hello Vm is created")
 
-	return ctrl.Result{}, nil
+	openstackVM := &virtualenvv1.OpenstackVM{}
+	if err := r.Get(ctx, req.NamespacedName, openstackVM); err != nil {
+		if apierrors.IsNotFound(err) {
+
+			openstackVM.Name = req.Name
+			openstackVM.Namespace = req.Namespace
+
+			return r.updateVirtualEnvInfraStatus(ctx, openstackVM, "deleted")
+		}
+		return ctrl.Result{}, err
+	}
+
+	return r.updateVirtualEnvInfraStatus(ctx, openstackVM, "created")
+}
+
+func (r *OpenstackProviderReconciler) updateVirtualEnvInfraStatus(ctx context.Context, vm *virtualenvv1.OpenstackVM, event string) (ctrl.Result, error) {
+	// OpenstackVM의 OwnerReference를 통해 VirtualEnvInfra 찾기
+	virtualEnvInfra := &virtualenvv1.VirtualEnvInfra{}
+	// 2. OwnerReference로 A 리소스를 찾기
+	owner := metav1.GetControllerOf(vm)
+	if owner == nil || owner.Kind != "VirtualEnvInfra" {
+		// A 리소스가 아닌 경우 무시
+		return reconcile.Result{}, nil
+	}
+	// 3. A 리소스 가져오기
+	if err := r.Get(ctx, client.ObjectKey{Name: owner.Name, Namespace: vm.Namespace}, virtualEnvInfra); err != nil {
+		return reconcile.Result{}, err
+	}
+
+	var vmStatus = []virtualenvv1.VirtualMachineStatus{}
+
+	switch event {
+	case "deleted":
+		vmStatus = append(
+			vmStatus, virtualenvv1.VirtualMachineStatus{
+				Status: "Deleted",
+			})
+		virtualEnvInfra.Status.VirtualMachineStatus = vmStatus
+		return reconcile.Result{}, r.Status().Update(ctx, virtualEnvInfra)
+
+	case "created":
+		vmStatus = append(
+			vmStatus, virtualenvv1.VirtualMachineStatus{
+				Status:        "created",
+				ConnectionURL: "http://172.16.156.253:8187",
+			})
+		virtualEnvInfra.Status.VirtualMachineStatus = vmStatus
+
+		return reconcile.Result{}, r.Status().Update(ctx, virtualEnvInfra)
+	}
+
+	return ctrl.Result{}, r.Update(ctx, virtualEnvInfra)
 }
 
 // SetupWithManager sets up the controller with the Manager.

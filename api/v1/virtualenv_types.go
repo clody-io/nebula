@@ -31,7 +31,7 @@ type VirtualEnvSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of VirtualEnv. Edit virtualenv_types.go to remove/update
-	VirtualEnvInfra *corev1.ObjectReference `json:"virtualEnvInfra"`
+	VirtualEnvInfraRef *corev1.ObjectReference `json:"virtualEnvInfraRef"`
 }
 
 // VirtualEnvStatus defines the observed state of VirtualEnv

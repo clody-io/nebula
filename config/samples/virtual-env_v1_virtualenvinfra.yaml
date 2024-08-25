@@ -7,3 +7,4 @@ metadata:
   name: virtualenvinfra-sample
 spec:
   # TODO(user): Add fields here
+  provider: openstack
