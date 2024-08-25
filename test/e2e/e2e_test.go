@@ -29,7 +29,7 @@ import (
 
 const namespace = "nebula-system"
 
-var _ = Describe("controller", Ordered, func() {
+var _ = Describe("controllers", Ordered, func() {
 	BeforeAll(func() {
 		By("installing prometheus operator")
 		Expect(utils.InstallPrometheusOperator()).To(Succeed())
@@ -76,17 +76,17 @@ var _ = Describe("controller", Ordered, func() {
 			_, err = utils.Run(cmd)
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
 
-			By("deploying the controller-manager")
+			By("deploying the controllers-manager")
 			cmd = exec.Command("make", "deploy", fmt.Sprintf("IMG=%s", projectimage))
 			_, err = utils.Run(cmd)
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
 
-			By("validating that the controller-manager pod is running as expected")
+			By("validating that the controllers-manager pod is running as expected")
 			verifyControllerUp := func() error {
 				// Get pod name
 
 				cmd = exec.Command("kubectl", "get",
-					"pods", "-l", "control-plane=controller-manager",
+					"pods", "-l", "control-plane=controllers-manager",
 					"-o", "go-template={{ range .items }}"+
 						"{{ if not .metadata.deletionTimestamp }}"+
 						"{{ .metadata.name }}"+
@@ -98,10 +98,10 @@ var _ = Describe("controller", Ordered, func() {
 				ExpectWithOffset(2, err).NotTo(HaveOccurred())
 				podNames := utils.GetNonEmptyLines(string(podOutput))
 				if len(podNames) != 1 {
-					return fmt.Errorf("expect 1 controller pods running, but got %d", len(podNames))
+					return fmt.Errorf("expect 1 controllers pods running, but got %d", len(podNames))
 				}
 				controllerPodName = podNames[0]
-				ExpectWithOffset(2, controllerPodName).Should(ContainSubstring("controller-manager"))
+				ExpectWithOffset(2, controllerPodName).Should(ContainSubstring("controllers-manager"))
 
 				// Validate pod status
 				cmd = exec.Command("kubectl", "get",
@@ -111,7 +111,7 @@ var _ = Describe("controller", Ordered, func() {
 				status, err := utils.Run(cmd)
 				ExpectWithOffset(2, err).NotTo(HaveOccurred())
 				if string(status) != "Running" {
-					return fmt.Errorf("controller pod in %s status", status)
+					return fmt.Errorf("controllers pod in %s status", status)
 				}
 				return nil
 			}

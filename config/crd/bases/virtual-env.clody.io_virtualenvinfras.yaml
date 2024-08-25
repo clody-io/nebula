@@ -39,34 +39,22 @@ spec:
           spec:
             description: VirtualEnvInfraSpec defines the desired state of VirtualEnvInfra
             properties:
+              lectureID:
+                type: string
               provider:
                 description: Foo is an example field of VirtualEnvInfra. Edit virtualenvinfra_types.go
                   to remove/update
                 type: string
+              userID:
+                type: string
             required:
+            - lectureID
             - provider
+            - userID
             type: object
           status:
             description: VirtualEnvInfraStatus defines the observed state of VirtualEnvInfra
             properties:
-              applicationStatus:
-                items:
-                  properties:
-                    connectionURL:
-                      type: string
-                    lastTransitionTime:
-                      format: date-time
-                      type: string
-                    provider:
-                      type: string
-                    status:
-                      type: string
-                    step:
-                      type: string
-                    virtualMachine:
-                      type: string
-                  type: object
-                type: array
               conditions:
                 description: |-
                   INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
@@ -124,6 +112,24 @@ spec:
                   - reason
                   - status
                   - type
+                  type: object
+                type: array
+              virtualMachineStatus:
+                items:
+                  properties:
+                    connectionURL:
+                      type: string
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    provider:
+                      type: string
+                    status:
+                      type: string
+                    step:
+                      type: string
+                    virtualMachine:
+                      type: string
                   type: object
                 type: array
             type: object

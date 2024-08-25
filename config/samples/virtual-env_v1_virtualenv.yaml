@@ -5,8 +5,10 @@ metadata:
     app.kubernetes.io/name: nebula
     app.kubernetes.io/managed-by: kustomize
   name: virtualenv-sample
+  namespace: default
 spec:
   virtualEnvInfraRef:
     apiVersion: virtual-env.clody.io/v1
     kind: VirtualEnvInfra
     name: virtualenvinfra-sample
+    namespace: default

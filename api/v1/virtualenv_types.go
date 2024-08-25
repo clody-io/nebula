@@ -36,8 +36,44 @@ type VirtualEnvSpec struct {
 
 // VirtualEnvStatus defines the observed state of VirtualEnv
 type VirtualEnvStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+
+	// FailureMessage indicates that there is a fatal problem reconciling the
+	// state, and will be set to a descriptive error message.
+	// +optional
+	FailureMessage *string `json:"failureMessage,omitempty"`
+
+	// Phase represents the current phase of cluster actuation.
+	// E.g. Pending, Running, Terminating, Failed etc.
+	// +optional
+	Phase string `json:"phase,omitempty"`
+
+	// InfrastructureReady is the state of the infrastructure provider.
+	// +optional
+	InfrastructureReady  bool                   `json:"infrastructureReady"`
+	VirtualMachineStatus []VirtualMachineStatus `json:"virtualMachineStatus,omitempty"`
+}
+
+// ANCHOR_END: ClusterStatus
+
+// SetTypedPhase sets the Phase field to the string representation of ClusterPhase.
+func (c *VirtualEnvStatus) SetTypedPhase(p VirtualEnvPhase) {
+	c.Phase = string(p)
+}
+
+// GetTypedPhase attempts to parse the Phase field and return
+// the typed ClusterPhase representation as described in `machine_phase_types.go`.
+func (c *VirtualEnvStatus) GetTypedPhase() VirtualEnvPhase {
+	switch phase := VirtualEnvPhase(c.Phase); phase {
+	case
+		VirtualEnvPhasePending,
+		VirtualEnvPhaseProvisioning,
+		VirtualEnvPhaseProvisioned,
+		VirtualEnvPhaseDeleting,
+		VirtualEnvPhaseFailed:
+		return phase
+	default:
+		return VirtualEnvPhaseUnknown
+	}
 }
 
 // +kubebuilder:object:root=true

@@ -88,6 +88,39 @@ spec:
             type: object
           status:
             description: VirtualEnvStatus defines the observed state of VirtualEnv
+            properties:
+              failureMessage:
+                description: |-
+                  FailureMessage indicates that there is a fatal problem reconciling the
+                  state, and will be set to a descriptive error message.
+                type: string
+              infrastructureReady:
+                description: InfrastructureReady is the state of the infrastructure
+                  provider.
+                type: boolean
+              phase:
+                description: |-
+                  Phase represents the current phase of cluster actuation.
+                  E.g. Pending, Running, Terminating, Failed etc.
+                type: string
+              virtualMachineStatus:
+                items:
+                  properties:
+                    connectionURL:
+                      type: string
+                    lastTransitionTime:
+                      format: date-time
+                      type: string
+                    provider:
+                      type: string
+                    status:
+                      type: string
+                    step:
+                      type: string
+                    virtualMachine:
+                      type: string
+                  type: object
+                type: array
             type: object
         type: object
     served: true
