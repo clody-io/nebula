@@ -19,6 +19,7 @@ package controller
 import (
 	"context"
 	"fmt"
+
 	virtualenvv1 "github.com/clody-io/nebula/api/v1"
 	"github.com/clody-io/nebula/internal/controller/template"
 	"github.com/google/go-cmp/cmp"
@@ -33,6 +34,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
+)
+
+const (
+	AnnotationUserID    = "virtualenvinfra.clody.io/user-id"
+	AnnotationLectureID = "virtualenvinfra.clody.io/lecture-id"
 )
 
 // VirtualEnvInfraReconciler reconciles a VirtualEnvInfra object
@@ -121,6 +127,19 @@ func (r *VirtualEnvInfraReconciler) createOrUpdateOpenstackVM(ctx context.Contex
 		return controllerutil.SetControllerReference(&virtualEnvInfra, found, r.Scheme)
 	})
 	return ctrl.Result{}, err
+}
+
+// getStringFromAnnotation searches a given v1.virtualenvinfra for a specific annotationKey and either returns the annotation's value.
+func (r *VirtualEnvInfraReconciler) getStringFromAnnotation(virtualEnvInfra virtualenvv1.VirtualEnvInfra, annotationKey string) string {
+	klog.V(4).Infof("getStringFromAnnotation (%s/%s, %v)", virtualEnvInfra.Namespace, virtualEnvInfra.Name, annotationKey)
+	if annotationValue, ok := virtualEnvInfra.Annotations[annotationKey]; ok {
+		// if there is an annotation, return string about annotation val.
+		// annotationValue can be empty, it is working as designed
+		klog.V(4).Infof("Found Annotation: %v = %v", annotationKey, annotationValue)
+		return annotationValue
+	}
+	//if there is no annotation, it returns an empty string ("").
+	return ""
 }
 
 func (r *VirtualEnvInfraReconciler) getCurrentVm(ctx context.Context, virtualEnvInfra virtualenvv1.VirtualEnvInfra) (*virtualenvv1.OpenstackVM, error) {

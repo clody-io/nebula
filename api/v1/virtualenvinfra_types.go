@@ -29,9 +29,10 @@ type VirtualEnvInfraSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of VirtualEnvInfra. Edit virtualenvinfra_types.go to remove/update
-	Provider  string `json:"provider"`
-	UserID    string `json:"userID"`
-	LectureID string `json:"lectureID"`
+	Provider string `json:"provider"`
+	//
+	// UserID    string `json:"userID"`
+	// LectureID string `json:"lectureID"`
 }
 
 type VirtualMachineStatus struct {
