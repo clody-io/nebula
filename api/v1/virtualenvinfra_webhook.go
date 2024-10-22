@@ -18,6 +18,7 @@ package v1
 
 import (
 	"fmt"
+
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -67,18 +68,10 @@ func (r *VirtualEnvInfra) ValidateCreate() (admission.Warnings, error) {
 func (r *VirtualEnvInfra) ValidateUpdate(old runtime.Object) (admission.Warnings, error) {
 	virtualenvinfralog.Info("validate update", "name", r.Name)
 
-	venvInfra, isVEnvInfra := old.(*VirtualEnvInfra)
+	_, isVEnvInfra := old.(*VirtualEnvInfra)
 
 	if !isVEnvInfra {
 		return nil, fmt.Errorf("given resourse is not a virtualEnvInfra resource")
-	}
-
-	if r.Spec.UserID != venvInfra.Spec.UserID {
-		return nil, fmt.Errorf("spec.UserID cannot be modified after resource creation")
-	}
-
-	if r.Spec.LectureID != venvInfra.Spec.LectureID {
-		return nil, fmt.Errorf("spec.LectureID cannot be modified after resource creation")
 	}
 
 	return nil, nil
