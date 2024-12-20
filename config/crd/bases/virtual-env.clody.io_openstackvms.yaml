@@ -117,6 +117,13 @@ spec:
                       type: string
                   type: object
                 type: array
+              instanceStatus:
+                properties:
+                  floating_ip:
+                    type: string
+                  instance_id:
+                    type: string
+                type: object
               status:
                 type: string
               virtualMachineStatus:

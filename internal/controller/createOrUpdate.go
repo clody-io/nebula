@@ -17,6 +17,7 @@ import (
 
 func CreateOrUpdateOpenstackVM(ctx context.Context, logCtx *log.Entry, c client.Client, obj *virtualenvv1.OpenstackVM, f controllerutil.MutateFn) (controllerutil.OperationResult, error) {
 	key := client.ObjectKeyFromObject(obj)
+
 	if err := c.Get(ctx, key, obj); err != nil {
 		if !errors.IsNotFound(err) {
 			return controllerutil.OperationResultNone, err

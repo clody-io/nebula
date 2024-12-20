@@ -4,9 +4,10 @@ metadata:
   labels:
     app.kubernetes.io/name: nebula
     app.kubernetes.io/managed-by: kustomize
+  annotations:
+    nebula.clody.kubernetes.io/user-id: "jeff"
+    nebula.clody.kubernetes.io/course-id: "test"
   name: virtualenvinfra-sample
 spec:
   # TODO(user): Add fields here
   provider: openstack
-  userID: test
-  lectureID: test

@@ -32,15 +32,21 @@ type OpenstackVMSpec struct {
 	Foo string `json:"foo,omitempty"`
 }
 
+type InstanceStatus struct {
+	FloatingIP string `json:"floating_ip,omitempty"`
+	InstanceID string `json:"instance_id,omitempty"`
+}
+
 // OpenstackVMStatus defines the observed state of OpenstackVM
 type OpenstackVMStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
-	CreationTimestamp    metav1.Time          `json:"creationTimestamp,omitempty"`
-	Conditions           []metav1.Condition   `json:"conditions,omitempty"`
-	Status               string               `json:"status,omitempty"`
-	Errors               []OpenstackVMError   `json:"errorMessage,omitempty"`
-	VirtualMachineStatus VirtualMachineStatus `json:"virtualMachineStatus,omitempty"`
+	CreationTimestamp    metav1.Time        `json:"creationTimestamp,omitempty"`
+	Conditions           []metav1.Condition `json:"conditions,omitempty"`
+	Status               string             `json:"status,omitempty"`
+	Errors               []OpenstackVMError `json:"errorMessage,omitempty"`
+	InstanceStatus       `json:"instanceStatus,omitempty"`
+	VirtualMachineStatus `json:"virtualMachineStatus,omitempty"`
 }
 
 // +kubebuilder:object:root=true

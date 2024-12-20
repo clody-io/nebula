@@ -24,6 +24,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	logger "github.com/sirupsen/logrus"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -33,6 +34,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
+	"time"
 )
 
 // VirtualEnvInfraReconciler reconciles a VirtualEnvInfra object
@@ -46,6 +48,9 @@ type VirtualEnvInfraReconciler struct {
 // +kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvinfras,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvinfras/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=virtual-env.clody.io,resources=virtualenvinfras/finalizers,verbs=update
+// +kubebuilder:rbac:groups=discovery.k8s.io,resources=endpointslices,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups="",resources=services,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -56,15 +61,59 @@ type VirtualEnvInfraReconciler struct {
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.19.0/pkg/reconcile
+
+func (r *VirtualEnvInfraReconciler) checkAndHandleOpenstackVM(ctx context.Context,
+	virtualEnvInfra virtualenvv1.VirtualEnvInfra) (ctrl.Result, error) {
+	vmName := types.NamespacedName{
+		Namespace: virtualEnvInfra.Namespace,
+		Name:      virtualEnvInfra.Name + "-openstack-vm",
+	}
+
+	logCtx := logger.WithField("VirtualEnvInfra", vmName)
+	logCtx.Info("Chcek OpenstackVM reconcile start")
+	var openstackVM virtualenvv1.OpenstackVM
+
+	if err := r.Get(ctx, vmName, &openstackVM); err != nil {
+		if errors.IsNotFound(err) {
+			// OpenStack VM이 존재하지 않는 경우 생성
+			logCtx.Infof("OpenstackVM does not exist, creating...")
+			return r.createOrUpdateOpenstackVM(ctx, virtualEnvInfra)
+		}
+		return ctrl.Result{}, fmt.Errorf("failed to get OpenstackVM: %w", err)
+	}
+
+	// OpenStack VM이 존재하는 경우 상태 확인
+	if openstackVM.Status.VirtualMachineStatus.Status != "ACTIVE" || openstackVM.Status.InstanceStatus.FloatingIP == "" {
+		logCtx.Infof("OpenstackVM is not ready. Current status: %s", openstackVM.Status.VirtualMachineStatus.Status)
+		return ctrl.Result{RequeueAfter: 10 * time.Second}, nil
+	}
+
+	// OpenStack VM이 준비된 경우 Connection URL 반환
+	logCtx.Infof("OpenstackVM is ready with FloatingIP: %s", openstackVM.Status.InstanceStatus.FloatingIP)
+
+	if err := r.createServiceAndIngress(ctx, &virtualEnvInfra, &openstackVM); err != nil {
+		return ctrl.Result{RequeueAfter: 10 * time.Second}, nil
+	}
+
+	var status []virtualenvv1.VirtualMachineStatus
+	status = append(status, openstackVM.Status.VirtualMachineStatus)
+	status[0].ConnectionURL = "https://dev.clody.io/" + openstackVM.Status.InstanceID
+	virtualEnvInfra.Status.VirtualMachineStatus = status
+
+	if err := r.Status().Update(ctx, &virtualEnvInfra); err != nil {
+		return ctrl.Result{RequeueAfter: 10 * time.Second},
+			fmt.Errorf("failed to update OpenstackVM status: %w", err)
+	}
+
+	return ctrl.Result{}, nil
+}
+
 func (r *VirtualEnvInfraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logCtx := logger.WithField("VirtualEnvInfra", req.NamespacedName)
-
+	logCtx.Info("VirtualEnvInfra reconcile start")
 	var virtualEnvInfra virtualenvv1.VirtualEnvInfra
 
 	if err := r.Get(ctx, req.NamespacedName, &virtualEnvInfra); err != nil {
-		if client.IgnoreNotFound(err) != nil {
-			logCtx.WithError(err).Infof("unable to get VirtualEnvInfra: '%v' ", err)
-		}
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
@@ -75,13 +124,12 @@ func (r *VirtualEnvInfraReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		if err := r.Update(ctx, &virtualEnvInfra); err != nil {
 			return ctrl.Result{}, err
 		}
-
 		return ctrl.Result{}, nil
 	}
 
 	switch virtualEnvInfra.Spec.Provider {
 	case "openstack":
-		return r.createOrUpdateOpenstackVM(ctx, virtualEnvInfra)
+		return r.checkAndHandleOpenstackVM(ctx, virtualEnvInfra)
 
 	default:
 		logCtx.Warn(fmt.Sprintf("unsupported provider %s", virtualEnvInfra.Spec))
@@ -98,7 +146,7 @@ func (r *VirtualEnvInfraReconciler) createOrUpdateOpenstackVM(ctx context.Contex
 	}
 	logCtx := logger.WithField("VirtualEnvInfra", namespacedName)
 
-	desiredVM, err := template.GenerateOpenstackVM(logCtx, virtualEnvInfra)
+	desiredVM, err := template.GenerateOpenstackVM(logCtx, &virtualEnvInfra)
 
 	found := &virtualenvv1.OpenstackVM{
 		ObjectMeta: metav1.ObjectMeta{
@@ -118,6 +166,8 @@ func (r *VirtualEnvInfraReconciler) createOrUpdateOpenstackVM(ctx context.Contex
 	_, err = CreateOrUpdateOpenstackVM(ctx, logCtx, r.Client, desiredVM, func() error {
 		// Copy only the Application/ObjectMeta fields that are significant, from the generatedApp
 		found.Spec = desiredVM.Spec
+		found.ObjectMeta.Labels = desiredVM.ObjectMeta.Labels
+		found.ObjectMeta.Annotations = desiredVM.ObjectMeta.Annotations
 		return controllerutil.SetControllerReference(&virtualEnvInfra, found, r.Scheme)
 	})
 	return ctrl.Result{}, err
@@ -179,7 +229,7 @@ func getOpenstackVMOwnsHandlerPredicates() predicate.Funcs {
 				if isVm {
 					vmName = vm.Name
 				}
-				logger.WithField("VirtualMachine", vmName).Debugln("received create event from owning an OpenstackVM")
+				logger.WithField("VirtualMachine", vmName).Infoln("received create event from owning an OpenstackVM")
 			}
 			return false
 		},
@@ -228,5 +278,16 @@ func shouldRequeueVirtualEnvInfraByOpenstackVM(vmOld *virtualenvv1.OpenstackVM, 
 		return true
 	}
 
+	// Status.Phase 변경 감지
+	if !cmp.Equal(vmOld.Status.VirtualMachineStatus, vmNew.Status.VirtualMachineStatus) {
+		return true
+	}
+
+	if vmOld.Status.VirtualMachineStatus.Status != vmNew.Status.VirtualMachineStatus.Status {
+		return true
+	}
+	if vmOld.Status.InstanceStatus.FloatingIP != vmNew.Status.InstanceStatus.FloatingIP {
+		return true
+	}
 	return false
 }

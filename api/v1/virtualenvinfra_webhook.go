@@ -59,6 +59,26 @@ var _ webhook.Validator = &VirtualEnvInfra{}
 func (r *VirtualEnvInfra) ValidateCreate() (admission.Warnings, error) {
 	virtualenvinfralog.Info("validate create", "name", r.Name)
 
+	// 필요한 어노테이션 키들
+	requiredAnnotations := []string{
+		"nebula.clody.kubernetes.io/user-id",
+		"nebula.clody.kubernetes.io/course-id",
+	}
+	// 누락된 어노테이션을 저장할 리스트
+	missingAnnotations := []string{}
+
+	// 어노테이션이 존재하는지 확인
+	for _, annotationKey := range requiredAnnotations {
+		if _, exists := r.Annotations[annotationKey]; !exists {
+			missingAnnotations = append(missingAnnotations, annotationKey)
+		}
+	}
+
+	// 누락된 어노테이션이 있다면 에러 반환
+	if len(missingAnnotations) > 0 {
+		return nil, fmt.Errorf("missing required annotations: %v", missingAnnotations)
+	}
+
 	// TODO(user): fill in your validation logic upon object creation.
 	return nil, nil
 }
@@ -67,18 +87,10 @@ func (r *VirtualEnvInfra) ValidateCreate() (admission.Warnings, error) {
 func (r *VirtualEnvInfra) ValidateUpdate(old runtime.Object) (admission.Warnings, error) {
 	virtualenvinfralog.Info("validate update", "name", r.Name)
 
-	venvInfra, isVEnvInfra := old.(*VirtualEnvInfra)
+	_, isVEnvInfra := old.(*VirtualEnvInfra)
 
 	if !isVEnvInfra {
 		return nil, fmt.Errorf("given resourse is not a virtualEnvInfra resource")
-	}
-
-	if r.Spec.UserID != venvInfra.Spec.UserID {
-		return nil, fmt.Errorf("spec.UserID cannot be modified after resource creation")
-	}
-
-	if r.Spec.LectureID != venvInfra.Spec.LectureID {
-		return nil, fmt.Errorf("spec.LectureID cannot be modified after resource creation")
 	}
 
 	return nil, nil

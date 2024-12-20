@@ -39,18 +39,15 @@ spec:
           spec:
             description: VirtualEnvInfraSpec defines the desired state of VirtualEnvInfra
             properties:
-              lectureID:
+              imageId:
                 type: string
               provider:
                 description: Foo is an example field of VirtualEnvInfra. Edit virtualenvinfra_types.go
                   to remove/update
                 type: string
-              userID:
-                type: string
             required:
-            - lectureID
+            - imageId
             - provider
-            - userID
             type: object
           status:
             description: VirtualEnvInfraStatus defines the observed state of VirtualEnvInfra

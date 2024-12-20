@@ -17,10 +17,14 @@ limitations under the License.
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"flag"
-	"os"
+	_config "github.com/clody-io/nebula/internal/controller/config"
+	"github.com/gophercloud/gophercloud/v2"
 
+	__config "github.com/gophercloud/gophercloud/v2/openstack/config"
+	"os"
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -139,14 +143,67 @@ func main() {
 		// after the manager stops then its usage might be unsafe.
 		// LeaderElectionReleaseOnCancel: true,
 	})
+
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
 		os.Exit(1)
 	}
 
+	//namespace := "nebula-system"        // ConfigMap이 있는 네임스페이스
+	//configMapName := "nebula-configmap" // 읽고자 하는 ConfigMap 이름
+	//secretName := "nebula-secrets"      // 읽고자 하는 ConfigMap 이름
+	//
+	//configMap := &corev1.ConfigMap{}
+	//secret := &corev1.Secret{}
+
+	//if err := mgr.GetClient().Get(context.TODO(), client.ObjectKey{
+	//	Namespace: namespace,
+	//	Name:      configMapName,
+	//}, configMap); err != nil {
+	//	setupLog.Error(err, "unable to get configmap nebula-configmap", "controller", "VirtualEnv")
+	//	os.Exit(1)
+	//}
+	//
+	//if err := mgr.GetClient().Get(context.TODO(), client.ObjectKey{
+	//	Namespace: namespace,
+	//	Name:      secretName,
+	//}, secret); err != nil {
+	//	setupLog.Error(err, "unable to get secret nebula-secrets", "controller", "VirtualEnv")
+	//	os.Exit(1)
+	//}
+
+	_config.Init(_config.Config{OpenstackAuth: _config.OpenstackAuthConfig{
+		UserName:      "jeff.we",
+		UserPassword:  "Tmaltmfhdn1!",
+		UserDomain:    "clody",
+		ProjectName:   "clody-infra",
+		ProjectDomain: "clody",
+		Region:        "kr-central-01",
+	}})
+
+	// TLS 설정 (인증서 검증 비활성화)
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: true,
+	}
+	// Call Keystone to get an authentication token, and use it to
+	// construct a ProviderClient. All functions hitting the OpenStack API
+	// accept a `context.Context` to enable tracing and cancellation.
+	providerClient, err := __config.NewProviderClient(context.TODO(), gophercloud.AuthOptions{
+		IdentityEndpoint: "https://iam.dev.cloud.clody.io",
+		Username:         "jeff.we",
+		Password:         "Tmaltmfhdn1!",
+		DomainName:       "clody",
+		TenantName:       "clody-infra",
+	}, __config.WithTLSConfig(tlsConfig))
+
+	if err != nil {
+		panic(err)
+	}
+
 	if err = (&controller.OpenstackProviderReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:          mgr.GetClient(),
+		Scheme:          mgr.GetScheme(),
+		OpenstackClient: providerClient,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "OpenstackProvider")
 		os.Exit(1)
