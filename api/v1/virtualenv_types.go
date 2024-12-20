@@ -32,6 +32,12 @@ type VirtualEnvSpec struct {
 
 	// Foo is an example field of VirtualEnv. Edit virtualenv_types.go to remove/update
 	VirtualEnvInfraRef *corev1.ObjectReference `json:"virtualEnvInfraRef"`
+
+	// label ? annotation ?
+	// annotation으로?
+	// virtual-env.clody.io/user-id: '833287368871'
+	// virtual-env.clody.io/lecture-id: '833287368871'
+
 }
 
 // VirtualEnvStatus defines the observed state of VirtualEnv
@@ -49,7 +55,7 @@ type VirtualEnvStatus struct {
 
 	// InfrastructureReady is the state of the infrastructure provider.
 	// +optional
-	InfrastructureReady  bool                   `json:"infrastructureReady"`
+	InfrastructureReady  bool                   `json:"infrastructureReady"` /// infra가 만들어져 있을때 ( running/stopped )
 	VirtualMachineStatus []VirtualMachineStatus `json:"virtualMachineStatus,omitempty"`
 }
 
@@ -65,9 +71,11 @@ func (c *VirtualEnvStatus) SetTypedPhase(p VirtualEnvPhase) {
 func (c *VirtualEnvStatus) GetTypedPhase() VirtualEnvPhase {
 	switch phase := VirtualEnvPhase(c.Phase); phase {
 	case
-		VirtualEnvPhasePending,
-		VirtualEnvPhaseProvisioning,
-		VirtualEnvPhaseProvisioned,
+		VirtualEnvPhasePending,      /// VM 생성 요청만 한 상태
+		VirtualEnvPhaseProvisioning, /// VM 생성중
+		VirtualEnvPhaseProvisioned,  /// VM 생성 생성은 완료 initial scripts 가 돌고 있는중
+		VirtualEnvPhaseRunning,      /// 실제로 사용자가 사용할 수 있는 상태
+		VirtualEnvPhaseStopped,      /// 여러가지 이유로 vm이 stop 된상태
 		VirtualEnvPhaseDeleting,
 		VirtualEnvPhaseFailed:
 		return phase

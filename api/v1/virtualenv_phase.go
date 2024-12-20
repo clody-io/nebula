@@ -15,6 +15,11 @@ const (
 	// and the infrastructure object is ready (if defined).
 	VirtualEnvPhaseProvisioned = VirtualEnvPhase("Provisioned")
 
+	VirtualEnvPhaseRunning = VirtualEnvPhase("Running")
+
+	// VirtualEnvPhaseStopped is the state when its virtual env infra is created and configured
+	// and the infrastructure object is ready (if defined).
+	VirtualEnvPhaseStopped = VirtualEnvPhase("Stopped")
 	// VirtualEnvPhaseDeleting is the Virtual Env state when a delete
 	// request has been sent to the API Server,
 	// but its infrastructure has not yet been fully deleted.
