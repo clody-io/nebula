@@ -113,8 +113,8 @@ func (r *OpenstackProviderReconciler) createOrUpdateOpenstackVM(ctx context.Cont
 
 		createOpts := instance.CreateOpts{
 			Name:             openstackVM.Name, // 서버 이름
-			FlavorRef:        "0203cc05-c5a6-48f1-8281-75fd4e50cedb",
-			ImageRef:         "c1648d43-633f-4ce3-b991-92d2c9a2cd43", // Image ID
+			FlavorRef:        "0db5a869-052f-49e6-adbe-e5c12baddbf8",
+			ImageRef:         "022db2f8-1af1-4bc8-a8e7-c14fa1332389", // Image ID
 			AvailabilityZone: "nova",
 			SecurityGroups:   []string{"default"},
 			AdminPass:        "Tmaltmfhdn1!",

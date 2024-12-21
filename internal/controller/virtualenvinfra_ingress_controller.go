@@ -15,6 +15,14 @@ import (
 	"k8s.io/utils/ptr"
 )
 
+var nginxRedirect = `|if ($request_uri = /%s) {
+	return 301 /%s/;
+}`
+
+var proxyHeader = `Upgrade $http_upgrade;
+Connection "upgrade";
+Accept-Encoding "gzip";`
+
 func (r *VirtualEnvInfraReconciler) createServiceAndIngress(ctx context.Context, virtualEnvInfra *virtualenvv1.VirtualEnvInfra, instance *virtualenvv1.OpenstackVM) error {
 	namespacedName := types.NamespacedName{
 		Namespace: virtualEnvInfra.Namespace,
@@ -110,9 +118,16 @@ func (r *VirtualEnvInfraReconciler) createServiceAndIngress(ctx context.Context,
 			Name:      virtualEnvInfra.Name + "-svc",
 			Namespace: virtualEnvInfra.Namespace,
 			Annotations: map[string]string{
-				"kubernetes.io/ingress.class":                "nginx",
-				"nginx.ingress.kubernetes.io/rewrite-target": "/",
-				"cert-manager.io/cluster-issuer":             "letsencrypt-prod-clody",
+				"kubernetes.io/ingress.class":    "nginx",
+				"cert-manager.io/cluster-issuer": "letsencrypt-prod-clody",
+				"nginx.ingress.kubernetes.io/configuration-snippet": fmt.Sprintf(`if ($request_uri = "/%s") {
+        return 301 /%s/;
+    }`, instance.Status.InstanceID, instance.Status.InstanceID),
+				"nginx.ingress.kubernetes.io/proxy-pass-headers": "Host",
+				"nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
+				"nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
+				"nginx.ingress.kubernetes.io/proxy-set-headers":  proxyHeader,
+				"nginx.ingress.kubernetes.io/rewrite-target":     "/$1",
 			},
 			Labels: map[string]string{
 				"nebula.clody.kubernetes.io/vm-id": instance.Status.InstanceStatus.InstanceID,
@@ -128,8 +143,8 @@ func (r *VirtualEnvInfraReconciler) createServiceAndIngress(ctx context.Context,
 						HTTP: &networkingv1.HTTPIngressRuleValue{
 							Paths: []networkingv1.HTTPIngressPath{
 								{
-									Path:     "/" + fmt.Sprintf("%s", instance.Status.InstanceID),
-									PathType: ptr.To(networkingv1.PathTypePrefix),
+									Path:     "/" + fmt.Sprintf("%s", instance.Status.InstanceID) + "/(.*)",
+									PathType: ptr.To(networkingv1.PathTypeImplementationSpecific),
 									Backend: networkingv1.IngressBackend{
 										Service: &networkingv1.IngressServiceBackend{
 											Name: virtualEnvInfra.Name + "-svc",
